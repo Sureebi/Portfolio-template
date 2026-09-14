@@ -250,30 +250,6 @@ example.com {
 }
 ```
 
-## GitHub Template Workflow
-
-After pushing the repository to GitHub:
-
-1. Open the repository settings.
-2. Enable **Template repository**.
-3. Users can create new projects with **Use this template**.
-
-## Suggested Personalization Checklist
-
-- Name and role
-- Email address
-- Footer links
-- CV link
-- About copy
-- Highlight page copy
-- Project details
-- Experience labels
-- Portfolio images
-- Page title
-- Favicon
-- Open Graph image
-- Deployment target
-
 ## License
 
 This project is released under the **MIT License**. See `LICENSE` for details.
