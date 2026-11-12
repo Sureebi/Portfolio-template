@@ -6,6 +6,8 @@ A bilingual Vue 3 and Vite portfolio with interactive highlight cards, animated 
 
 [![Portfolio homepage with five interactive highlight cards](docs/portfolio-preview.png)](https://sureebi.github.io/Portfolio-template/)
 
+See a customized version of the template in use on a real portfolio at [slavislaveev.com](https://slavislaveev.com/).
+
 ## Run locally
 
 ```sh
