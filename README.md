@@ -2,6 +2,10 @@
 
 A bilingual Vue 3 and Vite portfolio with interactive highlight cards, animated navigation, a project showcase, and a career timeline. The bundled profile, projects, links, and illustrations are sample content.
 
+## Preview
+
+[![Portfolio homepage with five interactive highlight cards](docs/portfolio-preview.png)](https://sureebi.github.io/Portfolio-template/)
+
 ## Run locally
 
 ```sh
