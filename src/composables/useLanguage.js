@@ -15,8 +15,8 @@ const locale = ref(
 watch(locale, (language) => {
   document.documentElement.lang = language
   document.title = language === 'bg'
-    ? 'Алекс Морган | IT специалист'
-    : 'Alex Morgan | IT Specialist'
+    ? 'Vue 3 шаблон за портфолио — адаптивен и двуезичен'
+    : 'Vue 3 Portfolio Template — Responsive & Bilingual'
 }, { immediate: true })
 
 const isLanguageChanging = ref(false)
