@@ -1,6 +1,14 @@
 # Vue Editorial Portfolio Template
 
-A bilingual Vue 3 and Vite portfolio with interactive highlight cards, animated navigation, a project showcase, and a career timeline. The bundled profile, projects, links, and illustrations are sample content.
+A portfolio template for developers, designers, and other creatives who want to tell the story behind their work. Visitors can explore your projects, career, and interests through an interactive deck of illustrated cards. Start with a complete example, then make it yours with your own writing, images, and links.
+
+## Why use this template?
+
+- **An interactive first impression.** Five illustrated cards lead to dedicated pages, with animated transitions connecting the homepage to each story.
+- **Designed for phones as well as desktops.** The card layout adapts to narrow screens, with visible labels on mobile so visitors can choose a section by touch.
+- **Room for the story behind each project.** A project showcase pairs previews with descriptions, while a career timeline makes it easy to browse roles, education, and skills.
+- **English and Bulgarian built in.** Visitors can switch languages on the site, and their choice is remembered for the next visit.
+- **Ready to personalize and host.** Sample content and artwork give you a starting point. Vue 3 and Vite produce a static site, and the included GitHub Actions workflow can publish your copy to GitHub Pages.
 
 ## Preview
 
