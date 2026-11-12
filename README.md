@@ -16,6 +16,13 @@ A portfolio template for developers, designers, and other creatives who want to 
 
 See a customized version of the template in use on a real portfolio at [slavislaveev.com](https://slavislaveev.com/).
 
+## Tech Stack
+
+- **Vue 3** and **JavaScript** for the interactive interface.
+- **Vue Router** for navigation between portfolio pages.
+- **Vite** for local development and production builds.
+- **CSS** for responsive layouts, card effects, and page transitions.
+
 ## Run locally
 
 ```sh
