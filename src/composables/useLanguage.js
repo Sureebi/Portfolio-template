@@ -1,4 +1,5 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { highlightPageContent } from '../data/highlightPageContent'
 
 const STORAGE_KEY = 'portfolio-language'
 
@@ -11,7 +12,12 @@ const locale = ref(
     : 'en'
 )
 
-document.documentElement.lang = locale.value
+watch(locale, (language) => {
+  document.documentElement.lang = language
+  document.title = language === 'bg'
+    ? 'Алекс Морган | IT специалист'
+    : 'Alex Morgan | IT Specialist'
+}, { immediate: true })
 
 const isLanguageChanging = ref(false)
 
@@ -26,59 +32,71 @@ let switching = false
 
 const messages = {
 
-  
+  /* =======================================================
+     ENGLISH
+  ======================================================= */
 
   en: {
+    highlightPages: highlightPageContent.en,
+
+    beyondWork: {
+      title: 'When I’m away from the computer.',
+      lead: 'I make time for model building and other hands-on projects.',
+      story1: 'This model ship illustrates how small parts come together in a larger design.',
+      story2: 'I sketch each build before cutting or assembling the parts.',
+      outdoors1: 'Walks are another chance to observe shapes and textures.',
+      outdoors2: 'I keep notes so I can revisit ideas later.',
+      imageAlt: 'Fine green technical illustration of a three-masted sailing ship'
+    },
 
     brand:
-      'Your Name - Your Role',
+      'Alex Morgan - IT Specialist',
 
     nav: {
       highlights: 'Highlights',
-      about: 'About me',
+      about: 'A little more personal',
       projects: 'More Projects',
       contact: 'Contact me'
     },
 
     loader: {
       assets:
-        'Loading Portfolio Assets'
+        'Loading Portfolio Assets...'
     },
 
 
-    
+    /* =====================================================
+       HIGHLIGHTS
+    ===================================================== */
 
     highlights: {
 
-      open:
-        'Open',
-
       about: {
-        title: 'Intro',
+        title: 'About Me',
         description:
-          'A short personal introduction.'
+          'A short introduction.'
       },
 
       beyond: {
         title: 'Beyond Work',
         description:
-          'Hobbies, interests and life outside of work.'
+          'Hobbies, Interests and life outside of work.'
       },
 
       journey: {
         title:
-          'Journey',
+          'Professional Journey',
 
         description:
-          'Experience, background and key milestones.'
+          'My experience In hosting, IT support and technical environments.'
       },
 
       lab: {
         title:
-        'Lab & Projects',
+          'Lab & Projects',
 
         description:
-          'Infrastructure, networking, self-hosting and hands-on projects.'
+          'Ideas, Infrastructure, self-hosting and hands-on projects.'
       },
 
       next: {
@@ -86,140 +104,41 @@ const messages = {
           "What's Next",
 
         description:
-          'Future goals, interests and next steps.'
+          'Where I want to grow and what I want to explore next.'
       }
 
     },
 
 
-    highlightPages: {
-
-      intro: {
-        kicker:
-          '01 / Intro',
-
-        title:
-          'A short introduction',
-
-        lead:
-          'Use this page to introduce who you are, what you do and what kind of work you want to be known for.',
-
-        story:
-          'Write a concise personal story here. Keep it practical, specific and easy to scan.',
-
-        note:
-          'Replace this placeholder copy with your own background, interests and direction.'
-      },
-
-      outside: {
-        kicker:
-          '02 / Beyond Work',
-
-        title:
-          'Beyond the work',
-
-        lead:
-          'Use this page for the human side of your portfolio: interests, hobbies and the things that shape your perspective.',
-
-        story:
-          'This section works best when it feels personal but still relevant to the overall portfolio.',
-
-        note:
-          'Add details that help visitors remember you without turning the page into a biography.'
-      },
-
-      journey: {
-        kicker:
-          '03 / Journey',
-
-        title:
-          'Experience and direction',
-
-        lead:
-          'Use this page to describe your path, your strongest skills and the environments you have worked in.',
-
-        story:
-          'Focus on the kind of problems you solve and the value you bring.',
-
-        note:
-          'You can later turn this into a timeline, case study or more detailed experience page.'
-      },
-
-      lab: {
-        kicker:
-          '04 / Lab & Projects',
-
-        title:
-          'Projects and experiments',
-
-        lead:
-          'Use this page to show practical work, experiments, prototypes, systems or technical explorations.',
-
-        story:
-          'Keep the page grounded in outcomes: what you built, why it matters and what tools were involved.',
-
-        note:
-          'Add screenshots, diagrams or project cards when your project material is ready.'
-      },
-
-      next: {
-        kicker:
-          '05 / Next',
-
-        title:
-          'What comes next',
-
-        lead:
-          'Use this page to share what you want to learn, build or explore next.',
-
-        story:
-          'This is a good place for goals, open directions and the type of opportunities you are looking for.',
-
-        note:
-          'Keep it focused so it feels intentional, not like a generic wishlist.'
-      }
-
-    },
+    /* =====================================================
+       PERSONAL
+    ===================================================== */
 
 
-    
+personal: {
 
-    about: {
+  title1:
+    'Life outside work',
 
-      kicker:
-        'About Me',
+  lead:
+    'I set aside time for creative projects away from my desk.',
 
-      title1:
-        'Curious mind.',
+  story1:
+    'I keep a small sketchbook for ideas that might become weekend projects.',
 
-      title2:
-        'Tech-driven.',
+  story2:
+    'I enjoy trying new materials and documenting what I learn.',
 
-      title3:
-        'Always building.',
+  side1:
+    'A long walk often gives me a fresh perspective.',
 
-      lead:
-        'Write a short lead paragraph about who you are, what you do and what kind of work you care about.',
+  side2:
+    'I like keeping some time free for unplanned ideas.'
+},
 
-      story1:
-        'Use this paragraph to describe your approach, strengths and the problems you enjoy solving.',
-
-      story2:
-        'Use this paragraph for background, learning style, tools or experience that support your story.',
-
-      sideLabel:
-        'Beyond the job title',
-
-      side1:
-        'Add a few details that make the portfolio feel human and specific without exposing private information.',
-
-      side2:
-        'This block can be replaced with a portrait, workspace image or another visual that fits your brand.'
-
-    },
-
-
-    
+    /* =====================================================
+       PROJECTS
+    ===================================================== */
 
     projects: {
 
@@ -242,53 +161,57 @@ const messages = {
       items: {
 
         homelab:
-          'Featured Project 01',
+          'Home Lab Infrastructure',
 
         mikrotik:
-          'Featured Project 02',
+          'MikroTik Home Network',
 
         immich:
-          'Featured Project 03'
+          'Immich Self-Hosted Cloud',
 
-      },
+        portfolio:
+          'Editorial Portfolio',
 
+        scripts:
+          'Small Scripts & Automation',
 
-      descriptions: {
-
-        homelab:
-          'A short project summary explaining the goal, role and result.',
-
-        mikrotik:
-          'A short project summary focused on process, tools and impact.',
-
-        immich:
-          'A short project summary that can later link to a case study.'
-
-      },
-
-
-      tags: {
-
-        linux:
-          'Linux',
-
-        docker:
-          'Docker',
-
-        network:
-          'Network',
-
-        mikrotik:
-          'Tooling',
-
-        routing:
-          'Process',
+        monitoring:
+          'Monitoring & Troubleshooting Notes',
 
         storage:
-          'Storage',
+          'Storage, Backups & Media Services',
 
-        privacy:
-          'Research'
+        networkDocs:
+          'Network Documentation'
+
+      },
+
+
+      details: {
+
+        homelab:
+          'Servers, services and experiments at home',
+
+        mikrotik:
+          'Routing, firewall rules and practical networking',
+
+        immich:
+          'Private photo cloud and self-hosted services',
+
+        portfolio:
+          'A bilingual portfolio built with Vue and Vite',
+
+        scripts:
+          'Utilities for repetitive technical tasks',
+
+        monitoring:
+          'Logs, checks and notes from real support work',
+
+        storage:
+          'Practical experiments around data, access and recovery',
+
+        networkDocs:
+          'Diagrams, configs and things worth writing down'
 
       },
 
@@ -302,7 +225,7 @@ const messages = {
           'Self-Hosting & Infrastructure',
 
         networking:
-          'Networking & Systems',
+          'Networking & MikroTik',
 
         support:
           'Technical Support',
@@ -340,16 +263,29 @@ const messages = {
   },
 
 
-  
+  /* =======================================================
+     BULGARIAN
+  ======================================================= */
 
   bg: {
+    highlightPages: highlightPageContent.bg,
+
+    beyondWork: {
+      title: 'Когато не съм пред компютъра.',
+      lead: 'Отделям време за моделизъм и други практически занимания.',
+      story1: 'Този модел на кораб показва как малките части оформят цялостен дизайн.',
+      story2: 'Правя скица, преди да изрежа и сглобя частите.',
+      outdoors1: 'Разходките ми дават възможност да наблюдавам форми и текстури.',
+      outdoors2: 'Записвам идеи, към които да се върна по-късно.',
+      imageAlt: 'Фина зелена техническа рисунка на тримачтов ветроход'
+    },
 
     brand:
-      'Твоето име - Твоята роля',
+      'Алекс Морган - IT Специалист',
 
     nav: {
       highlights: 'Акценти',
-      about: 'За мен',
+      about: 'Малко по-лично',
       projects: 'Още проекти',
       contact: 'Контакт'
     },
@@ -360,17 +296,16 @@ const messages = {
     },
 
 
-    
+    /* =====================================================
+       HIGHLIGHTS
+    ===================================================== */
 
     highlights: {
 
-      open:
-        'Отвори',
-
       about: {
-        title: 'Въведение',
+        title: 'За мен',
         description:
-          'Кратко лично представяне.'
+          'Кратко представяне.'
       },
 
       beyond: {
@@ -383,10 +318,10 @@ const messages = {
 
       journey: {
         title:
-          'Път',
+          'Професионален път',
 
         description:
-          'Опит, развитие и ключови моменти.'
+          'Опитът ми в хостинг, IT поддръжка и технически среди.'
       },
 
       lab: {
@@ -402,140 +337,42 @@ const messages = {
           'Какво следва',
 
         description:
-          'Бъдещи цели, интереси и следващи стъпки.'
+          'Накъде искам да се развивам и какво искам да изследвам занапред.'
       }
 
     },
 
 
-    highlightPages: {
+    /* =====================================================
+       PERSONAL
+    ===================================================== */
 
-      intro: {
-        kicker:
-          '01 / Въведение',
-
-        title:
-          'Кратко представяне',
-
-        lead:
-          'Използвай тази страница, за да представиш кой си, какво правиш и с каква работа искаш да те свързват.',
-
-        story:
-          'Напиши кратка лична история тук. Нека бъде конкретна, практична и лесна за преглед.',
-
-        note:
-          'Замени този текст със собствен фон, интереси и посока.'
-      },
-
-      outside: {
-        kicker:
-          '02 / Извън работата',
-
-        title:
-          'Извън работата',
-
-        lead:
-          'Използвай тази страница за по-човешката страна на портфолиото: интереси, хобита и нещата, които оформят гледната ти точка.',
-
-        story:
-          'Тази секция работи най-добре, когато е лична, но остава свързана с цялостното портфолио.',
-
-        note:
-          'Добави детайли, които помагат посетителите да те запомнят, без страницата да става биография.'
-      },
-
-      journey: {
-        kicker:
-          '03 / Път',
-
-        title:
-          'Опит и посока',
-
-        lead:
-          'Използвай тази страница, за да опишеш пътя си, силните си умения и средите, в които си работил.',
-
-        story:
-          'Фокусирай се върху проблемите, които решаваш, и стойността, която носиш.',
-
-        note:
-          'По-късно можеш да превърнеш това в timeline, case study или по-подробна страница за опита.'
-      },
-
-      lab: {
-        kicker:
-          '04 / Проекти',
-
-        title:
-          'Проекти и експерименти',
-
-        lead:
-          'Използвай тази страница, за да покажеш практическа работа, експерименти, прототипи, системи или технически проучвания.',
-
-        story:
-          'Дръж страницата конкретна: какво си направил, защо има значение и какви инструменти са използвани.',
-
-        note:
-          'Добави screenshots, диаграми или project cards, когато материалите са готови.'
-      },
-
-      next: {
-        kicker:
-          '05 / Следващо',
-
-        title:
-          'Какво следва',
-
-        lead:
-          'Използвай тази страница, за да споделиш какво искаш да учиш, създаваш или изследваш занапред.',
-
-        story:
-          'Това е добро място за цели, отворени посоки и типа възможности, които търсиш.',
-
-        note:
-          'Нека е фокусирано, за да звучи целенасочено, не като общ списък с желания.'
-      }
-
-    },
-
-
-    
-
-    about: {
-
-      kicker:
-        'За мен',
+    personal: {
 
       title1:
-        'Любопитен ум.',
-
-      title2:
-        'Воден от технологиите.',
-
-      title3:
-        'Винаги създавам.',
+        'Животът ми извън работата',
 
       lead:
-        'Напиши кратък водещ параграф за това кой си, какво правиш и какъв тип работа те интересува.',
+        'Отделям време за творчески проекти далеч от бюрото.',
 
       story1:
-        'Използвай този параграф, за да опишеш подхода си, силните си страни и проблемите, които обичаш да решаваш.',
+        'Записвам в скицник идеи за малки проекти.',
 
       story2:
-        'Използвай този параграф за фон, начин на учене, инструменти или опит, които подкрепят историята ти.',
-
-      sideLabel:
-        'Извън длъжността',
+        'Обичам да пробвам различни материали и да записвам наученото.',
 
       side1:
-        'Добави няколко детайла, които правят портфолиото по-човешко и конкретно, без да разкриват лична информация.',
+        'Дългата разходка често ми дава нова гледна точка.',
 
       side2:
-        'Този блок може да бъде заменен с портрет, снимка на работно място или друг визуален елемент, който пасва на бранда ти.'
+        'Оставям време и за непланирани идеи.'
 
     },
 
 
-    
+    /* =====================================================
+       PROJECTS
+    ===================================================== */
 
     projects: {
 
@@ -558,53 +395,57 @@ const messages = {
       items: {
 
         homelab:
-          'Избран проект едно',
+          'Home Lab инфраструктура',
 
         mikrotik:
-          'Избран проект две',
+          'Домашна MikroTik мрежа',
 
         immich:
-          'Избран проект три'
+          'Личен SMB облак',
 
-      },
+        portfolio:
+          'Editorial портфолио',
 
+        scripts:
+          'Малки скриптове & автоматизации',
 
-      descriptions: {
-
-        homelab:
-          'Кратко описание на проекта, целта, ролята и резултата.',
-
-        mikrotik:
-          'Кратко описание с фокус върху процеса, инструментите и ефекта.',
-
-        immich:
-          'Кратко описание, което по-късно може да води към case study.'
-
-      },
-
-
-      tags: {
-
-        linux:
-          'Linux',
-
-        docker:
-          'Docker',
-
-        network:
-          'Системи',
-
-        mikrotik:
-          'Инструменти',
-
-        routing:
-          'Процес',
+        monitoring:
+          'Monitoring & troubleshooting бележки',
 
         storage:
-          'Storage',
+          'Storage, backup & media услуги',
 
-        privacy:
-          'Проучване'
+        networkDocs:
+          'Мрежова документация'
+
+      },
+
+
+      details: {
+
+        homelab:
+          'Сървъри, услуги и експерименти вкъщи',
+
+        mikrotik:
+          'Routing, firewall правила и практична мрежова работа',
+
+        immich:
+          'Личен фото облак и self-hosted услуги',
+
+        portfolio:
+          'Двуезично портфолио, Vue / Vite',
+
+        scripts:
+          'Малки помощници за повтарящи се технически задачи',
+
+        monitoring:
+          'Логове, проверки и бележки от реална поддръжка',
+
+        storage:
+          'Практични експерименти с данни, достъп и възстановяване',
+
+        networkDocs:
+          'Диаграми, конфигурации и неща, които си струва да останат описани'
 
       },
 
@@ -618,7 +459,7 @@ const messages = {
           'Self-Hosting & Инфраструктура',
 
         networking:
-          'Мрежи & Системи',
+          'Мрежи & MikroTik',
 
         support:
           'Техническа поддръжка',
@@ -658,7 +499,9 @@ const messages = {
 }
 
 
-
+/* =========================================================
+   TRANSLATE
+========================================================= */
 
 function t(path) {
 
@@ -676,7 +519,9 @@ function t(path) {
 }
 
 
-
+/* =========================================================
+   LANGUAGE TRANSITION
+========================================================= */
 
 function wait(ms) {
 
@@ -714,9 +559,17 @@ async function setLanguage(language) {
   isLanguageChanging.value =
     true
 
+  const reducedMotion =
+    window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches
 
-  
-  await wait(390)
+
+  /*
+    Wait until mint animation
+    covers the page.
+  */
+  await wait(reducedMotion ? 10 : 330)
 
 
   locale.value =
@@ -729,19 +582,20 @@ async function setLanguage(language) {
   )
 
 
-  document.documentElement.lang =
-    language
 
 
-  
-  await wait(430)
+  /*
+    Vue paints the translated text
+    behind the transition.
+  */
+  await wait(reducedMotion ? 10 : 370)
 
 
   isLanguageChanging.value =
     false
 
 
-  await wait(120)
+  await wait(reducedMotion ? 10 : 80)
 
 
   switching = false
@@ -749,7 +603,9 @@ async function setLanguage(language) {
 }
 
 
-
+/* =========================================================
+   EXPORT
+========================================================= */
 
 export function useLanguage() {
 

@@ -1,6 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&display=swap');
 
-
+/* =========================================================
+   VARIABLES
+========================================================= */
 
 :root {
   --bg: #f8fbf9;
@@ -13,12 +15,22 @@
   --accent: #69c7ba;
   --accent-strong: #317c70;
 
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Manrope', sans-serif;
+  --font-display: 'Onest', sans-serif;
+  --font-body: 'Onest', sans-serif;
+
+  --motion-fast: 180ms;
+  --motion-ui: 240ms;
+  --motion-page-in: 420ms;
+  --motion-page-out: 280ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.55, 0.05, 0.65, 0.45);
+  --ease-ui: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 
-
+/* =========================================================
+   RESET
+========================================================= */
 
 * {
   box-sizing: border-box;
@@ -40,8 +52,8 @@ body {
   color: var(--text);
   background: var(--bg);
 
-  user-select: none;
-  -webkit-user-select: none;
+  user-select: text;
+  -webkit-user-select: text;
 
   font-family: var(--font-body);
   font-weight: 400;
@@ -63,7 +75,9 @@ a {
 }
 
 
-
+/* =========================================================
+   APP / PAGE SHELL
+========================================================= */
 
 .portfolio {
   width: 100%;
@@ -140,7 +154,7 @@ a {
 
 .site-header,
 .highlights-page,
-.about-page,
+.personal-page,
 .projects-page,
 .site-footer {
   position: relative;
@@ -148,15 +162,15 @@ a {
 }
 
 
-
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
 
 .site-header,
 .site-footer,
 .nav-link,
 .highlight-description,
 .loader-progress,
-.about-kicker,
-.about-text,
 .projects-page p,
 .projects-page span,
 .projects-page a {
@@ -165,7 +179,7 @@ a {
 
 .header-left,
 .highlight-heading h1,
-.about-title,
+.personal-title,
 .projects-page h1,
 .projects-page h2,
 .projects-page h3 {
@@ -178,7 +192,9 @@ a {
 }
 
 
-
+/* =========================================================
+   HEADER
+========================================================= */
 
 .site-header {
   flex-shrink: 0;
@@ -259,7 +275,9 @@ a {
 }
 
 
-
+/* =========================================================
+   FOOTER
+========================================================= */
 
 .site-footer {
   flex-shrink: 0;
@@ -314,7 +332,9 @@ a {
 }
 
 
-
+/* =========================================================
+   HIGHLIGHTS PAGE
+========================================================= */
 
 .highlights-page {
   flex: 1;
@@ -335,8 +355,18 @@ a {
   align-items: center;
 }
 
+.highlights-motion {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+}
 
 
+/* =========================================================
+   HIGHLIGHT TITLE
+========================================================= */
 
 .highlight-heading {
   position: absolute;
@@ -360,11 +390,11 @@ a {
 
   display: inline-block;
 
-  font-size: clamp(36px, 5vw, 82px);
+  font-size: clamp(48px, 7vw, 120px);
   font-weight: 700;
 
-  line-height: 0.92;
-  letter-spacing: -0.045em;
+  line-height: 0.88;
+  letter-spacing: -0.06em;
 
   text-align: center;
   white-space: nowrap;
@@ -386,11 +416,14 @@ a {
 }
 
 
-
+/* =========================================================
+   CARDS
+========================================================= */
 
 .highlights-cards {
   display: flex;
   align-items: center;
+
   gap: 0;
 
   position: relative;
@@ -411,10 +444,6 @@ a {
 
 .card-slot + .card-slot {
   margin-left: -70px;
-}
-
-.card-slot.is-active {
-  z-index: 20;
 }
 
 .card-slot:nth-child(1) {
@@ -447,8 +476,17 @@ a {
   --rotation: -0.4deg;
 }
 
+.card-slot.is-active {
+  z-index: 20;
+}
 
 
+/* Separate transform layers:
+   slot -> layout/dance
+   intro -> initial asset entrance
+   flight -> route transition
+   tilt -> hover
+*/
 
 .card-intro,
 .card-flight {
@@ -461,6 +499,23 @@ a {
 .card-flight {
   transform: translate3d(0, 0, 0);
   will-change: transform, opacity;
+}
+
+.card-pointer-motion {
+  --pointer-x: 0px;
+  --pointer-y: 0px;
+  --pointer-rx: 0deg;
+  --pointer-ry: 0deg;
+
+  position: relative;
+  transform:
+    perspective(1400px)
+    translate3d(var(--pointer-x), var(--pointer-y), 0)
+    rotateX(var(--pointer-rx))
+    rotateY(var(--pointer-ry));
+  transform-style: preserve-3d;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .card-tilt {
@@ -484,7 +539,8 @@ a {
   will-change: transform;
 }
 
-.card-tilt:hover {
+.card-hitbox:hover .card-tilt,
+.card-hitbox:focus-visible .card-tilt {
   z-index: 30;
 
   transform:
@@ -524,7 +580,8 @@ a {
     box-shadow 260ms ease;
 }
 
-.card-tilt:hover .highlight-card {
+.card-hitbox:hover .highlight-card,
+.card-hitbox:focus-visible .highlight-card {
   box-shadow:
     0 28px 60px rgba(0, 0, 0, 0.16),
     0 10px 20px rgba(0, 0, 0, 0.10);
@@ -578,17 +635,20 @@ a {
   transition: opacity 180ms ease;
 }
 
-.card-tilt:hover .card-glare {
+.card-hitbox:hover .card-glare,
+.card-hitbox:focus-visible .card-glare {
   opacity: 0.5;
 }
 
 
-
+/* =========================================================
+   HIGHLIGHT DESCRIPTION
+========================================================= */
 
 .highlight-description {
   position: absolute;
 
-  top: calc(100% + 22px);
+  top: calc(100% + 25px);
   left: 50%;
 
   width: 100%;
@@ -608,9 +668,9 @@ a {
 .highlight-description p {
   margin: 0;
 
-  max-width: 560px;
+  max-width: 650px;
 
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
 
   line-height: 1.5;
@@ -620,7 +680,9 @@ a {
 }
 
 
-
+/* =========================================================
+   HOVER LABEL ANIMATIONS
+========================================================= */
 
 .title-rise {
   animation:
@@ -661,7 +723,10 @@ a {
 }
 
 
-
+/* =========================================================
+   ASSET LOADER
+   Clean text echo inspired by the supplied reference.
+========================================================= */
 
 .highlights-loader {
   position: absolute;
@@ -792,7 +857,9 @@ a {
 }
 
 
-
+/* =========================================================
+   INITIAL CARD ENTRANCE
+========================================================= */
 
 .cards-intro .card-intro {
   opacity: 0;
@@ -849,26 +916,28 @@ a {
 }
 
 
+/* =========================================================
+   ROUTE TRANSITIONS — HIGHLIGHTS
+========================================================= */
 
-
-.to-about-leave-active .highlights-cards,
+.to-personal-leave-active .highlights-cards,
 .to-projects-leave-active .highlights-cards,
-.from-about-enter-active .highlights-cards,
+.from-personal-enter-active .highlights-cards,
 .from-projects-enter-active .highlights-cards {
   pointer-events: none;
 }
 
-.to-about-leave-active .card-flight,
+.to-personal-leave-active .card-flight,
 .to-projects-leave-active .card-flight,
-.from-about-enter-active .card-flight,
+.from-personal-enter-active .card-flight,
 .from-projects-enter-active .card-flight {
   backface-visibility: hidden;
   transform-style: preserve-3d;
   will-change: transform, opacity;
 }
 
-.to-about-leave-active .highlight-heading,
-.to-about-leave-active .highlight-description,
+.to-personal-leave-active .highlight-heading,
+.to-personal-leave-active .highlight-description,
 .to-projects-leave-active .highlight-heading,
 .to-projects-leave-active .highlight-description {
   animation:
@@ -897,9 +966,9 @@ a {
 }
 
 
+/* Highlights -> About */
 
-
-.to-about-leave-active .card-flight {
+.to-personal-leave-active .card-flight {
   animation:
     card-cascade-left
     420ms
@@ -907,23 +976,23 @@ a {
     both;
 }
 
-.to-about-leave-active .card-slot:nth-child(1) .card-flight {
+.to-personal-leave-active .card-slot:nth-child(1) .card-flight {
   animation-delay: 0ms;
 }
 
-.to-about-leave-active .card-slot:nth-child(2) .card-flight {
+.to-personal-leave-active .card-slot:nth-child(2) .card-flight {
   animation-delay: 35ms;
 }
 
-.to-about-leave-active .card-slot:nth-child(3) .card-flight {
+.to-personal-leave-active .card-slot:nth-child(3) .card-flight {
   animation-delay: 70ms;
 }
 
-.to-about-leave-active .card-slot:nth-child(4) .card-flight {
+.to-personal-leave-active .card-slot:nth-child(4) .card-flight {
   animation-delay: 105ms;
 }
 
-.to-about-leave-active .card-slot:nth-child(5) .card-flight {
+.to-personal-leave-active .card-slot:nth-child(5) .card-flight {
   animation-delay: 140ms;
 }
 
@@ -978,9 +1047,9 @@ a {
 }
 
 
+/* About -> Highlights */
 
-
-.from-about-enter-active .card-flight {
+.from-personal-enter-active .card-flight {
   animation:
     card-deal-from-left
     520ms
@@ -988,23 +1057,23 @@ a {
     both;
 }
 
-.from-about-enter-active .card-slot:nth-child(5) .card-flight {
+.from-personal-enter-active .card-slot:nth-child(5) .card-flight {
   animation-delay: 0ms;
 }
 
-.from-about-enter-active .card-slot:nth-child(4) .card-flight {
+.from-personal-enter-active .card-slot:nth-child(4) .card-flight {
   animation-delay: 40ms;
 }
 
-.from-about-enter-active .card-slot:nth-child(3) .card-flight {
+.from-personal-enter-active .card-slot:nth-child(3) .card-flight {
   animation-delay: 80ms;
 }
 
-.from-about-enter-active .card-slot:nth-child(2) .card-flight {
+.from-personal-enter-active .card-slot:nth-child(2) .card-flight {
   animation-delay: 120ms;
 }
 
-.from-about-enter-active .card-slot:nth-child(1) .card-flight {
+.from-personal-enter-active .card-slot:nth-child(1) .card-flight {
   animation-delay: 170ms;
 }
 
@@ -1058,7 +1127,7 @@ a {
 }
 
 
-
+/* Highlights -> Projects */
 
 .to-projects-leave-active .card-flight {
   animation:
@@ -1139,7 +1208,7 @@ a {
 }
 
 
-
+/* Projects -> Highlights */
 
 .from-projects-enter-active .card-flight {
   animation:
@@ -1219,27 +1288,95 @@ a {
 }
 
 
+/* =========================================================
+   FALLBACK ROUTE TRANSITION
+========================================================= */
 
+.to-about-card-leave-active .card-flight { animation: card-stack-soft-fold 380ms var(--ease-in) both; }
+.to-about-card-leave-active .card-slot:nth-child(1) .card-flight { animation: card-stack-about-open 460ms var(--ease-in) both; }
+.from-about-card-enter-active .card-flight { opacity: 0; animation: card-stack-about-return 420ms var(--ease-out) forwards; }
+
+.to-beyond-leave-active .card-flight { animation: card-stack-beyond-drift 400ms var(--ease-in) both; }
+.to-beyond-leave-active .card-slot:nth-child(2) .card-flight { animation: card-stack-beyond-open 480ms var(--ease-in) both; }
+.from-beyond-enter-active .card-flight { opacity: 0; animation: card-stack-beyond-return 430ms var(--ease-out) forwards; }
+
+.to-journey-leave-active .card-slot:nth-child(odd) .card-flight { animation: card-stack-journey-left 410ms var(--ease-in) both; }
+.to-journey-leave-active .card-slot:nth-child(even) .card-flight { animation: card-stack-journey-right 410ms var(--ease-in) both; }
+.to-journey-leave-active .card-slot:nth-child(3) .card-flight { animation: card-stack-journey-open 480ms var(--ease-in) both; }
+.from-journey-enter-active .card-flight { opacity: 0; animation: card-stack-journey-return 440ms var(--ease-out) forwards; }
+
+.to-lab-leave-active .card-flight { animation: card-stack-lab-collapse 410ms var(--ease-in) both; }
+.to-lab-leave-active .card-slot:nth-child(4) .card-flight { animation: card-stack-lab-open 480ms var(--ease-in) both; }
+.from-lab-enter-active .card-flight { opacity: 0; animation: card-stack-lab-return 420ms var(--ease-out) forwards; }
+
+.to-next-leave-active .card-flight { animation: card-stack-next-lift 400ms var(--ease-in) both; }
+.to-next-leave-active .card-slot:nth-child(5) .card-flight { animation: card-stack-next-open 480ms var(--ease-in) both; }
+.from-next-enter-active .card-flight { opacity: 0; animation: card-stack-next-return 450ms var(--ease-out) forwards; }
+
+.from-about-card-enter-active .card-slot:nth-child(2) .card-flight,
+.from-beyond-enter-active .card-slot:nth-child(2) .card-flight,
+.from-journey-enter-active .card-slot:nth-child(2) .card-flight,
+.from-lab-enter-active .card-slot:nth-child(2) .card-flight,
+.from-next-enter-active .card-slot:nth-child(2) .card-flight { animation-delay: 35ms; }
+.from-about-card-enter-active .card-slot:nth-child(3) .card-flight,
+.from-beyond-enter-active .card-slot:nth-child(3) .card-flight,
+.from-journey-enter-active .card-slot:nth-child(3) .card-flight,
+.from-lab-enter-active .card-slot:nth-child(3) .card-flight,
+.from-next-enter-active .card-slot:nth-child(3) .card-flight { animation-delay: 70ms; }
+.from-about-card-enter-active .card-slot:nth-child(4) .card-flight,
+.from-beyond-enter-active .card-slot:nth-child(4) .card-flight,
+.from-journey-enter-active .card-slot:nth-child(4) .card-flight,
+.from-lab-enter-active .card-slot:nth-child(4) .card-flight,
+.from-next-enter-active .card-slot:nth-child(4) .card-flight { animation-delay: 105ms; }
+.from-about-card-enter-active .card-slot:nth-child(5) .card-flight,
+.from-beyond-enter-active .card-slot:nth-child(5) .card-flight,
+.from-journey-enter-active .card-slot:nth-child(5) .card-flight,
+.from-lab-enter-active .card-slot:nth-child(5) .card-flight,
+.from-next-enter-active .card-slot:nth-child(5) .card-flight { animation-delay: 140ms; }
+
+.from-about-card-enter-active .card-slot:nth-child(1) .card-flight,
+.from-beyond-enter-active .card-slot:nth-child(2) .card-flight,
+.from-journey-enter-active .card-slot:nth-child(3) .card-flight,
+.from-lab-enter-active .card-slot:nth-child(4) .card-flight,
+.from-next-enter-active .card-slot:nth-child(5) .card-flight { animation-delay: 40ms; }
+
+@keyframes card-stack-soft-fold { to { opacity: 0; transform: translate3d(-34px, 34px, 0) rotate(-5deg) scale(.88); } }
+@keyframes card-stack-about-open { to { opacity: 0; transform: translate3d(-70px, 0, 0) rotate(-1deg) scale(1.12); } }
+@keyframes card-stack-about-return { from { opacity: 0; transform: translate3d(-42px, 28px, 0) rotate(-4deg) scale(.9); } to { opacity: 1; transform: none; } }
+@keyframes card-stack-beyond-drift { to { opacity: 0; transform: translate3d(18px, 62px, 0) rotate(7deg) scale(.9); } }
+@keyframes card-stack-beyond-open { to { opacity: 0; transform: translate3d(-24px, -76px, 0) rotate(-7deg) scale(1.08); } }
+@keyframes card-stack-beyond-return { from { opacity: 0; transform: translate3d(-24px, 70px, 0) rotate(-8deg) scale(.9); } to { opacity: 1; transform: none; } }
+@keyframes card-stack-journey-left { to { opacity: 0; transform: translate3d(-90px, 0, 0) rotate(-4deg) scale(.92); } }
+@keyframes card-stack-journey-right { to { opacity: 0; transform: translate3d(90px, 0, 0) rotate(4deg) scale(.92); } }
+@keyframes card-stack-journey-open { to { opacity: 0; transform: translate3d(0, -18px, 0) scale(1.14); clip-path: inset(0 0 0 48%); } }
+@keyframes card-stack-journey-return { from { opacity: 0; transform: translate3d(0, 44px, 0) scale(.9); } to { opacity: 1; transform: none; } }
+@keyframes card-stack-lab-collapse { to { opacity: 0; transform: translate3d(0, 42px, 0) scaleX(.72) scaleY(.88); } }
+@keyframes card-stack-lab-open { to { opacity: 0; transform: translate3d(42px, 0, 0) scaleX(1.2) scaleY(.96); } }
+@keyframes card-stack-lab-return { from { opacity: 0; transform: translate3d(0, -26px, 0) scaleX(.75); } to { opacity: 1; transform: none; } }
+@keyframes card-stack-next-lift { to { opacity: 0; transform: translate3d(0, -76px, 0) scale(.92); } }
+@keyframes card-stack-next-open { to { opacity: 0; transform: translate3d(28px, -110px, 0) rotate(3deg) scale(1.08); } }
+@keyframes card-stack-next-return { from { opacity: 0; transform: translate3d(0, -72px, 0) scale(.9); } to { opacity: 1; transform: none; } }
 
 .page-enter-active,
-.page-leave-active {
-  transition:
-    opacity 260ms ease,
-    transform 260ms ease;
-}
+.page-leave-active { will-change: opacity, transform; }
+
+.page-enter-active { transition: opacity var(--motion-page-in) ease-out, transform var(--motion-page-in) var(--ease-out); }
+.page-leave-active { transition: opacity var(--motion-page-out) ease-in, transform var(--motion-page-out) var(--ease-in); }
 
 .page-enter-from {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(16px);
 }
 
 .page-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
 }
 
 
-
+/* =========================================================
+   RESPONSIVE HIGHLIGHTS
+========================================================= */
 
 @media (max-width: 1380px) {
   .highlights-stage {
@@ -1255,7 +1392,36 @@ a {
 
 @media (max-width: 900px) {
   .site-header {
-    padding-inline: 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand actions"
+      "nav nav";
+    gap: 10px 18px;
+    padding: 16px 20px 13px;
+  }
+
+  .header-left {
+    grid-area: brand;
+    min-width: 0;
+  }
+
+  .header-center {
+    grid-area: nav;
+    position: static;
+    left: auto;
+    width: 100%;
+    transform: none;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .header-right {
+    grid-area: actions;
+    width: auto;
+    justify-content: flex-end;
+    text-align: right;
   }
 
   .site-footer {
@@ -1268,39 +1434,203 @@ a {
 }
 
 @media (max-width: 700px) {
-  .site-header {
-    padding: 16px 18px;
+  .personal-page,
+  .projects-page,
+  .highlight-detail-page,
+  .intro-page,
+  .beyond-page {
+    scrollbar-width: none;
+  }
 
+  .personal-page::-webkit-scrollbar,
+  .projects-page::-webkit-scrollbar,
+  .highlight-detail-page::-webkit-scrollbar,
+  .intro-page::-webkit-scrollbar,
+  .beyond-page::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand actions"
+      "nav nav";
+    gap: 10px 14px;
+    padding: 14px 18px 12px;
     font-size: 12px;
   }
 
-  .header-center {
-    position: absolute;
-    left: 50%;
+  .header-left {
+    grid-area: brand;
+    min-width: 0;
+  }
 
-    transform: translateX(-50%);
+  .header-brand {
+    display: block;
+    max-width: 145px;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+
+  .header-center {
+    grid-area: nav;
+    position: static;
+    left: auto;
+    width: 100%;
+    transform: none;
+    justify-content: flex-start;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .nav-link {
+    padding-bottom: 4px;
+  }
+
+  .header-right {
+    grid-area: actions;
+    width: auto;
+    justify-content: flex-end;
+    gap: 7px;
+    text-align: right;
+  }
+
+  .language-switcher {
+    gap: 4px;
+  }
+
+  .language-switcher button {
+    font-size: 11px;
+  }
+
+  .contact-button {
+    min-width: 0;
+    padding: 9px 14px;
+    font-size: 11px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .16);
   }
 
   .site-footer {
-    padding: 16px 18px;
+    padding: 12px 18px 14px;
+    font-size: 12px;
+    background: linear-gradient(0deg, rgba(248,251,249,.96), rgba(248,251,249,.72));
   }
 
   .highlights-stage {
-    transform: scale(0.50);
+    width: 100%;
+    transform: none;
+  }
+
+  .highlights-page {
+    width: 100%;
+    min-height: 0;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+
+  .highlights-motion {
+    display: block;
+    width: 100%;
+  }
+
+  .highlights-cards {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 12vw;
+    gap: 16px;
+    padding: 24px 12vw 18px;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+  }
+
+  .highlights-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card-slot,
+  .card-slot + .card-slot,
+  .card-slot:nth-child(n) {
+    flex: 0 0 auto;
+    margin: 0;
+    transform: none;
+    scroll-snap-align: center;
+  }
+
+  .card-pointer-motion {
+    transform: none;
+    transition: none;
+  }
+
+  .highlight-heading,
+  .highlight-description {
+    display: none;
+  }
+}
+
+/* Compact in-app and split-screen previews need more context than a phone. */
+@media (min-width: 520px) and (max-width: 700px) {
+  .highlights-cards {
+    gap: 18px;
+    padding-inline: 8vw;
+    scroll-padding-inline: 8vw;
+  }
+
+  .card-slot {
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header {
+    padding-inline: 14px;
+  }
+
+  .header-brand {
+    max-width: 122px;
+    font-size: 10px;
+  }
+
+  .contact-button {
+    padding-inline: 12px;
+  }
+
+  .highlights-cards {
+    padding-inline: 10vw;
   }
 }
 
 
-
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+  .card-pointer-motion {
+    transform: none;
+    transition: none;
+  }
+
   .loader-copy::before,
   .loader-copy::after,
   .cards-intro .card-intro,
-  .to-about-leave-active .card-flight,
+  .to-personal-leave-active .card-flight,
   .to-projects-leave-active .card-flight,
-  .from-about-enter-active .card-flight,
-  .from-projects-enter-active .card-flight {
+  .from-personal-enter-active .card-flight,
+  .from-projects-enter-active .card-flight,
+  .to-about-card-leave-active .card-flight,
+  .from-about-card-enter-active .card-flight,
+  .to-beyond-leave-active .card-flight,
+  .from-beyond-enter-active .card-flight,
+  .to-journey-leave-active .card-flight,
+  .from-journey-enter-active .card-flight,
+  .to-lab-leave-active .card-flight,
+  .from-lab-enter-active .card-flight,
+  .to-next-leave-active .card-flight,
+  .from-next-enter-active .card-flight {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
   }
@@ -1308,6 +1638,12 @@ a {
   .page-enter-active,
   .page-leave-active {
     transition-duration: 1ms !important;
+  }
+
+  .language-transition.is-active .language-transition__wash,
+  .language-transition.is-active .language-transition__label,
+  .language-transition__label i::after {
+    animation-duration: 1ms !important;
   }
 }
 
@@ -1338,7 +1674,7 @@ a {
 }
 
 
-
+/* underline */
 
 .header-brand::after {
   content: "";
@@ -1362,20 +1698,22 @@ a {
 }
 
 
-
+/* hover */
 
 .header-brand:hover::after {
   width: 35%;
 }
 
 
-
+/* когато си на Highlights */
 
 .header-brand-active::after {
   width: 75%;
 }
 
-
+/* =========================================================
+   LANGUAGE SWITCHER
+========================================================= */
 
 .header-right {
   display: flex;
@@ -1486,7 +1824,9 @@ a {
   font-size: 11px;
 }
 
-
+/* =========================================================
+   LANGUAGE TRANSITION
+========================================================= */
 
 .language-transition {
   position: fixed;
@@ -1501,7 +1841,9 @@ a {
 }
 
 
-
+/* =========================================================
+   WASH
+========================================================= */
 
 .language-transition__wash {
   position: absolute;
@@ -1540,7 +1882,10 @@ a {
       68%
     );
 
-  
+  /*
+    Start exactly around the
+    language switcher area.
+  */
 
   clip-path:
     circle(
@@ -1561,7 +1906,7 @@ a {
 .language-transition__wash {
   animation:
     language-wash
-    840ms
+    720ms
     cubic-bezier(
       0.76,
       0,
@@ -1648,7 +1993,7 @@ a {
 .language-transition__label {
   animation:
     language-label
-    840ms
+    720ms
     ease
     both;
 }
@@ -1704,7 +2049,7 @@ a {
 
   animation:
     language-progress
-    840ms
+    720ms
     ease
     both;
 }
@@ -1767,7 +2112,7 @@ a {
 }
 
 
-
+/* prevent text width jumping too much */
 
 .contact-button__text {
   display: inline-flex;
@@ -1775,7 +2120,7 @@ a {
 }
 
 
-
+/* copied state */
 
 .contact-button.is-copied {
   background:
@@ -1809,7 +2154,9 @@ a {
     var(--accent-strong);
 }
 
-
+/* =========================================================
+   CONTACT
+========================================================= */
 
 .contact-wrap {
   position: relative;
@@ -1820,7 +2167,7 @@ a {
 }
 
 
-
+/* BUTTON */
 
 .contact-button {
   appearance: none;
@@ -1890,7 +2237,9 @@ a {
 }
 
 
-
+/* =========================================================
+   COPY TOAST
+========================================================= */
 
 .contact-toast {
   position: absolute;
@@ -1950,7 +2299,9 @@ a {
 }
 
 
-
+/* =========================================================
+   TOAST ANIMATION
+========================================================= */
 
 .contact-toast-enter-active,
 .contact-toast-leave-active {

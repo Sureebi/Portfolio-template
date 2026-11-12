@@ -2,31 +2,96 @@
 import {
   ref,
   computed,
-  onMounted
+  onMounted,
+  onBeforeUnmount
 } from 'vue'
 
-import HighlightCards
-  from './HighlightCards.vue'
+import HighlightCard
+  from './HighlightCard.vue'
 
 import {
   useLanguage
 } from '../composables/useLanguage'
 
 
+import beyondImg
+  from '../assets/highlights/sample-beyond.svg'
+
+import professionalImg
+  from '../assets/highlights/sample-journey.svg'
+
+import futureImg
+  from '../assets/highlights/sample-next.svg'
+
+import aboutImg
+  from '../assets/highlights/sample-profile.svg'
+
+import labprojects
+  from '../assets/highlights/sample-lab.svg'
+
 const {
   t
 } = useLanguage()
 
+const highlightsMotion = ref(null)
+let pointerFrame = null
+let motionPreference = null
+
+function resetPointerMotion() {
+  const motion = highlightsMotion.value
+
+  if (!motion) return
+
+  motion
+    .querySelectorAll('.card-pointer-motion')
+    .forEach((card) => {
+      card.style.setProperty('--pointer-x', '0px')
+      card.style.setProperty('--pointer-y', '0px')
+      card.style.setProperty('--pointer-rx', '0deg')
+      card.style.setProperty('--pointer-ry', '0deg')
+    })
+}
+
+function updatePointerMotion(event) {
+  if (
+    event.pointerType !== 'mouse' ||
+    motionPreference?.matches
+  ) return
+
+  const motion = highlightsMotion.value
+
+  if (!motion) return
+
+  const x = (event.clientX / window.innerWidth) * 2 - 1
+  const y = (event.clientY / window.innerHeight) * 2 - 1
+
+  cancelAnimationFrame(pointerFrame)
+
+  pointerFrame = requestAnimationFrame(() => {
+    const depths = [0.68, 0.84, 1, 0.82, 0.66]
+
+    motion
+      .querySelectorAll('.card-pointer-motion')
+      .forEach((card, index) => {
+        const depth = depths[index] ?? 0.75
+
+        card.style.setProperty('--pointer-x', `${x * 5 * depth}px`)
+        card.style.setProperty('--pointer-y', `${y * 3.5 * depth}px`)
+        card.style.setProperty('--pointer-rx', `${y * -1.25 * depth}deg`)
+        card.style.setProperty('--pointer-ry', `${x * 2.1 * depth}deg`)
+      })
+  })
+}
 
 
+/* =========================================================
+   HIGHLIGHTS
+========================================================= */
 
 const highlights =
   computed(() => [
 
     {
-      id:
-        '01',
-
       title:
         t(
           'highlights.about.title'
@@ -37,15 +102,14 @@ const highlights =
           'highlights.about.description'
         ),
 
-      to:
-        '/intro'
+      to: '/about-card',
+
+      image:
+        aboutImg
     },
 
 
     {
-      id:
-        '02',
-
       title:
         t(
           'highlights.beyond.title'
@@ -56,15 +120,14 @@ const highlights =
           'highlights.beyond.description'
         ),
 
-      to:
-        '/outside-work'
+      to: '/beyond-work',
+
+      image:
+        beyondImg
     },
 
 
     {
-      id:
-        '03',
-
       title:
         t(
           'highlights.journey.title'
@@ -75,15 +138,14 @@ const highlights =
           'highlights.journey.description'
         ),
 
-      to:
-        '/journey'
+      to: '/professional-journey',
+
+      image:
+        professionalImg
     },
 
 
     {
-      id:
-        '04',
-
       title:
         t(
           'highlights.lab.title'
@@ -94,15 +156,14 @@ const highlights =
           'highlights.lab.description'
         ),
 
-      to:
-        '/lab-projects'
+      to: '/lab-projects',
+
+      image:
+        labprojects
     },
 
 
     {
-      id:
-        '05',
-
       title:
         t(
           'highlights.next.title'
@@ -113,14 +174,18 @@ const highlights =
           'highlights.next.description'
         ),
 
-      to:
-        '/next'
+      to: '/whats-next',
+
+      image:
+        futureImg
     }
 
   ])
 
 
-
+/* =========================================================
+   ACTIVE CARD
+========================================================= */
 
 const activeIndex =
   ref(null)
@@ -166,311 +231,12 @@ function clearHighlight() {
 }
 
 
-
-
-const ASSET_VERSION =
-  'portfolio-highlights-v1'
-
-
-const APP_READY_FLAG =
-  '__portfolioHighlightsReady'
-
-
-const firstEverVisit =
-  localStorage.getItem(
-    ASSET_VERSION
-  ) !== 'true'
-
-
-const alreadyReadyThisApp =
-  window[
-    APP_READY_FLAG
-  ] === true
-
-
-const assetsReady =
-  ref(
-    alreadyReadyThisApp
-  )
-
-
-const loadingProgress =
-  ref(
-    alreadyReadyThisApp
-      ? 100
-      : 0
-  )
-
-
-const playInitialIntro =
-  ref(
-    !alreadyReadyThisApp
-  )
-
-
-
-
-function preloadImage(src) {
-
-  return new Promise(
-    resolve => {
-
-      const img =
-        new Image()
-
-
-      let finished =
-        false
-
-
-      const finish =
-        async () => {
-
-          if (finished) {
-            return
-          }
-
-
-          finished =
-            true
-
-
-          try {
-
-            if (
-              typeof img.decode ===
-              'function'
-            ) {
-
-              await img.decode()
-
-            }
-
-          } catch {}
-
-
-          resolve()
-
-        }
-
-
-      img.onload =
-        finish
-
-
-      img.onerror =
-        finish
-
-
-      img.src =
-        src
-
-
-      if (
-        img.complete &&
-        img.naturalWidth > 0
-      ) {
-
-        finish()
-
-      }
-
-    }
-  )
-
-}
-
-
-function waitForPaint() {
-
-  return new Promise(
-    resolve => {
-
-      requestAnimationFrame(
-        () => {
-
-          requestAnimationFrame(
-            resolve
-          )
-
-        }
-      )
-
-    }
-  )
-
-}
-
-
-
-
-async function preloadAssets() {
-
-  if (
-    window[
-      APP_READY_FLAG
-    ] === true
-  ) {
-
-    loadingProgress.value =
-      100
-
-
-    assetsReady.value =
-      true
-
-
-    playInitialIntro.value =
-      false
-
-
-    return
-  }
-
-
-  const images =
-    highlights.value
-      .map(
-        item =>
-          item.image
-      )
-      .filter(Boolean)
-
-
-  if (
-    images.length === 0
-  ) {
-
-    loadingProgress.value =
-      100
-
-
-    window[
-      APP_READY_FLAG
-    ] =
-      true
-
-
-    localStorage.setItem(
-      ASSET_VERSION,
-      'true'
-    )
-
-
-    assetsReady.value =
-      true
-
-
-    return
-  }
-
-
-  const startedAt =
-    performance.now()
-
-
-  let loaded =
-    0
-
-
-  await Promise.all(
-
-    images.map(
-      async src => {
-
-        await preloadImage(
-          src
-        )
-
-
-        loaded += 1
-
-
-        loadingProgress.value =
-          Math.round(
-            (
-              loaded /
-              images.length
-            ) *
-            100
-          )
-
-      }
-    )
-
-  )
-
-
-  const minimumLoaderTime =
-    firstEverVisit
-      ? 900
-      : 0
-
-
-  const elapsed =
-    performance.now() -
-    startedAt
-
-
-  if (
-    elapsed <
-    minimumLoaderTime
-  ) {
-
-    await new Promise(
-      resolve => {
-
-        setTimeout(
-          resolve,
-
-          minimumLoaderTime -
-            elapsed
-        )
-
-      }
-    )
-
-  }
-
-
-  loadingProgress.value =
-    100
-
-
-  await waitForPaint()
-
-
-  window[
-    APP_READY_FLAG
-  ] =
-    true
-
-
-  localStorage.setItem(
-    ASSET_VERSION,
-    'true'
-  )
-
-
-  assetsReady.value =
-    true
-
-
-  window.setTimeout(
-    () => {
-
-      playInitialIntro.value =
-        false
-
-    },
-
-    1300
-  )
-
-}
-
-
-
+const playInitialIntro = ref(true)
+let introTimeout
+
+/* =========================================================
+   CARD MOVEMENT
+========================================================= */
 
 function getDanceOffset(index) {
 
@@ -539,21 +305,6 @@ function getCardStyle(index) {
         45 +
       'ms',
 
-    '--glint-delay':
-      index *
-        820 +
-      'ms',
-
-    '--sway-delay':
-      index *
-        -420 +
-      'ms',
-
-    '--sway-direction':
-      index % 2 === 0
-        ? 'alternate'
-        : 'alternate-reverse',
-
     '--intro-delay':
       index *
         90 +
@@ -607,18 +358,36 @@ function getCardClasses(index) {
 }
 
 
-
+/* =========================================================
+   MOUNT
+========================================================= */
 
 onMounted(() => {
 
-  if (
-    !assetsReady.value
-  ) {
+  motionPreference = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  )
 
-    preloadAssets()
+  window.addEventListener(
+    'pointermove',
+    updatePointerMotion,
+    { passive: true }
+  )
 
-  }
+  window.addEventListener(
+    'blur',
+    resetPointerMotion
+  )
 
+  introTimeout = window.setTimeout(() => { playInitialIntro.value = false }, 1300)
+
+})
+
+onBeforeUnmount(() => {
+  window.clearTimeout(introTimeout)
+  cancelAnimationFrame(pointerFrame)
+  window.removeEventListener('pointermove', updatePointerMotion)
+  window.removeEventListener('blur', resetPointerMotion)
 })
 </script>
 
@@ -628,55 +397,9 @@ onMounted(() => {
   <main class="highlights-page">
 
 
-    
-
-    <Transition
-      name="asset-loader"
-    >
-
-      <div
-        v-if="!assetsReady"
-        class="highlights-loader"
-      >
-
-        <div
-          class="loader-copy"
-
-          :data-text="
-            t(
-              'loader.assets'
-            )
-          "
-        >
-
-          <span>
-            {{
-              t(
-                'loader.assets'
-              )
-            }}
-          </span>
-
-        </div>
-
-
-        <div
-          class="loader-progress"
-        >
-          {{
-            loadingProgress
-          }}%
-        </div>
-
-      </div>
-
-    </Transition>
-
-
-    
+    <!-- HIGHLIGHTS -->
 
     <div
-      v-if="assetsReady"
 
       class="highlights-stage"
 
@@ -686,8 +409,13 @@ onMounted(() => {
       }"
     >
 
+      <div
+        ref="highlightsMotion"
+        class="highlights-motion"
+      >
 
-      
+
+      <!-- TITLE -->
 
       <div
         class="highlight-heading"
@@ -710,7 +438,7 @@ onMounted(() => {
       </div>
 
 
-      
+      <!-- CARDS -->
 
       <div
         class="highlights-cards"
@@ -753,23 +481,18 @@ onMounted(() => {
               class="card-flight"
             >
 
-              <HighlightCards
-                :number="
-                  highlight.id
-                "
+              <div
+                class="card-pointer-motion"
+              >
 
+              <HighlightCard
+                :to="highlight.to"
                 :title="
                   highlight.title
                 "
 
                 :description="
                   highlight.description
-                "
-
-                :action-label="
-                  t(
-                    'highlights.open'
-                  )
                 "
 
                 :image="
@@ -780,10 +503,6 @@ onMounted(() => {
                   index
                 "
 
-                :to="
-                  highlight.to
-                "
-
                 @activate="
                   showHighlight(
                     $event,
@@ -791,6 +510,8 @@ onMounted(() => {
                   )
                 "
               />
+
+              </div>
 
             </div>
 
@@ -801,7 +522,7 @@ onMounted(() => {
       </div>
 
 
-      
+      <!-- DESCRIPTION -->
 
       <div
         class="highlight-description"
@@ -823,6 +544,7 @@ onMounted(() => {
 
       </div>
 
+      </div>
 
     </div>
 

@@ -1,7 +1,7 @@
 <script setup>
-import PortfolioHighlights from '../components/PortfolioHighlights.vue'
+import HighlightsShowcase from '../components/HighlightsShowcase.vue'
 </script>
 
 <template>
-  <PortfolioHighlights />
+  <HighlightsShowcase />
 </template>

@@ -3,6 +3,10 @@ import {
   computed
 } from 'vue'
 
+import {
+  RouterLink
+} from 'vue-router'
+
 import '../more-projects.css'
 
 import {
@@ -11,111 +15,146 @@ import {
 
 
 const {
-  t
+  t,
+  locale
 } = useLanguage()
 
 
-
+/* =========================================================
+   PROJECTS
+========================================================= */
 
 const projects =
   computed(() => [
 
     {
-      index:
-        '01',
-
+      title: locale.value === 'bg' ? 'Каталог за студио' : 'Studio catalog',
+      detail: locale.value === 'bg'
+        ? 'Примерен каталог с категории и филтри.'
+        : 'A sample catalog with categories and filters.',
+      href: 'https://example.com/'
+    },
+    {
       title:
         t(
           'projects.items.homelab'
         ),
 
-      description:
+      detail:
         t(
-          'projects.descriptions.homelab'
+          'projects.details.homelab'
         ),
 
-      tags: [
-        t(
-          'projects.tags.linux'
-        ),
-        t(
-          'projects.tags.docker'
-        ),
-        t(
-          'projects.tags.network'
-        )
-      ],
-
-      url:
-        '#'
+      to:
+        '/lab-projects?project=homelab-design'
     },
 
 
     {
-      index:
-        '02',
-
       title:
         t(
           'projects.items.mikrotik'
         ),
 
-      description:
+      detail:
         t(
-          'projects.descriptions.mikrotik'
+          'projects.details.mikrotik'
         ),
 
-      tags: [
-        t(
-          'projects.tags.mikrotik'
-        ),
-        t(
-          'projects.tags.routing'
-        ),
-        t(
-          'projects.tags.network'
-        )
-      ],
-
-      url:
-        '#'
+      to:
+        '/lab-projects?project=network'
     },
 
 
     {
-      index:
-        '03',
-
       title:
         t(
           'projects.items.immich'
         ),
 
-      description:
+      detail:
         t(
-          'projects.descriptions.immich'
+          'projects.details.immich'
         ),
 
-      tags: [
+      to:
+        '/lab-projects?project=photos'
+    },
+
+
+    {
+      title:
         t(
-          'projects.tags.storage'
+          'projects.items.portfolio'
         ),
+
+      detail:
         t(
-          'projects.tags.docker'
+          'projects.details.portfolio'
         ),
+
+      to:
+        '/'
+    },
+
+
+    {
+      title:
         t(
-          'projects.tags.privacy'
+          'projects.items.scripts'
+        ),
+
+      detail:
+        t(
+          'projects.details.scripts'
         )
-      ],
+    },
 
-      url:
-        '#'
+
+    {
+      title:
+        t(
+          'projects.items.monitoring'
+        ),
+
+      detail:
+        t(
+          'projects.details.monitoring'
+        )
+    },
+
+
+    {
+      title:
+        t(
+          'projects.items.storage'
+        ),
+
+      detail:
+        t(
+          'projects.details.storage'
+        )
+    },
+
+
+    {
+      title:
+        t(
+          'projects.items.networkDocs'
+        ),
+
+      detail:
+        t(
+          'projects.details.networkDocs'
+        )
     }
 
   ])
 
 
-
+/* =========================================================
+   FOCUS AREAS
+========================================================= */
 
 const focusAreas =
   computed(() => [
@@ -151,7 +190,9 @@ const focusAreas =
   ])
 
 
-
+/* =========================================================
+   EXPERIENCE
+========================================================= */
 
 const experience =
   computed(() => [
@@ -163,7 +204,7 @@ const experience =
         ),
 
       company:
-        'Company / Organization'
+        'Example Studio'
     },
 
 
@@ -174,7 +215,7 @@ const experience =
         ),
 
       company:
-        'Company / Organization'
+        'Sample Hosting'
     },
 
 
@@ -185,7 +226,7 @@ const experience =
         ),
 
       company:
-        'Company / Organization'
+        'Demo Cloud'
     },
 
 
@@ -196,7 +237,7 @@ const experience =
         ),
 
       company:
-        'Company / Organization'
+        'Example Support'
     }
 
   ])
@@ -210,19 +251,9 @@ const experience =
     <div class="projects-layout">
 
 
-      
+      <!-- LEFT -->
 
       <section class="projects-left">
-
-        <p class="projects-kicker">
-          {{
-            t(
-              'projects.kicker'
-            )
-          }}
-        </p>
-
-
         <h1 class="projects-title">
 
           {{
@@ -244,7 +275,7 @@ const experience =
 
         <div class="projects-list">
 
-          <a
+          <component
             v-for="
               (
                 project,
@@ -254,76 +285,61 @@ const experience =
 
             :key="index"
 
-            :href="
-              project.url
+            :is="
+              project.to
+                ? RouterLink
+                : project.href ? 'a' : 'div'
             "
+
+            :to="
+              project.to
+            "
+            :href="project.href"
+            :target="project.href ? '_blank' : undefined"
+            :rel="project.href ? 'noopener noreferrer' : undefined"
 
             class="project-row"
           >
 
-            <span class="project-index">
-              {{
-                project.index
-              }}
-            </span>
-
-
             <span class="project-copy">
 
-              <strong>
+              <span class="project-title">
                 {{
                   project.title
                 }}
-              </strong>
+              </span>
 
-              <small>
+
+              <span class="project-detail">
                 {{
-                  project.description
+                  project.detail
                 }}
-              </small>
-
-              <span class="project-tags">
-
-                <span
-                  v-for="
-                    (
-                      tag,
-                      tagIndex
-                    ) in project.tags
-                  "
-                  :key="tagIndex"
-                >
-                  {{
-                    tag
-                  }}
-                </span>
-
               </span>
 
             </span>
 
 
             <span
+              v-if="project.to || project.href"
               class="project-arrow"
+              aria-hidden="true"
             >
-              {{
-                '↗'
-              }}
+              {{ project.href ? '↗' : '→' }}
             </span>
 
-          </a>
+          </component>
 
         </div>
 
       </section>
 
 
-      
+      <!-- MIDDLE -->
 
       <section class="projects-middle">
 
 
-        
+        <!-- FOCUS -->
 
         <div class="projects-section">
 
@@ -360,7 +376,7 @@ const experience =
         </div>
 
 
-        
+        <!-- EXPERIENCE -->
 
         <div
           class="
@@ -419,6 +435,23 @@ const experience =
         </div>
 
       </section>
+
+
+      <!-- VISUAL -->
+
+      <aside
+        class="projects-visual"
+        aria-hidden="true"
+      >
+
+        <div class="projects-sculpture">
+          <span
+            v-for="index in 22"
+            :key="index"
+          />
+        </div>
+
+      </aside>
 
     </div>
 
